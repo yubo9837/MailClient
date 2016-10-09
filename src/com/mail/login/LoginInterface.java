@@ -21,7 +21,12 @@ import java.awt.event.KeyEvent;
 public class LoginInterface extends JFrame {
 
 	private JPanel contentPane;
+	private JLabel userNameLabel;//提示文本
+	private JButton confirmButton;//确认按钮
+	private JTextField userTextField;//用户名输入框
+	private MainInterface mainInterface;//主界面
 	
+	//启动界面
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -47,11 +52,14 @@ public class LoginInterface extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		//提示文本
 		userNameLabel = new JLabel("\u7528\u6237\u540D");
 		userNameLabel.setBounds(24, 26, 54, 15);
 		contentPane.add(userNameLabel);
 		
+		//用户名输入框
 		userTextField = new JTextField();
+		//添加按键事件，按enter==点击确认键
 		userTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -63,10 +71,13 @@ public class LoginInterface extends JFrame {
 		contentPane.add(userTextField);
 		userTextField.setColumns(10);
 		
+		//确认按钮
 		confirmButton = new JButton("\u786E\u5B9A");
 		confirmButton.addMouseListener(new MouseAdapter() {
+			//添加鼠标点击事件，点击鼠标时执行confirm()
 			@Override
 			public void mouseClicked(MouseEvent event) {
+				//点击鼠标左键
 				if(event.getButton()==event.BUTTON1)
 					confirm();
 			}
@@ -78,18 +89,24 @@ public class LoginInterface extends JFrame {
 	private void confirm() {
 		String user=this.userTextField.getText();
 		if(user.trim().equals("")){
+			//若输入为空，则弹出警告
+			JOptionPane.showConfirmDialog(this, "请输入用户名","警告",
 					JOptionPane.OK_CANCEL_OPTION);
 			return;
 		}
+		//创建data文件夹
 		File mainFolder = new File("data");
 		if(!mainFolder.exists()){
 			mainFolder.mkdir();
 		}
+		//创建user文件夹(若之前没有则创建)
 		File folder = new File("data" + File.separator + user);
 		if(!folder.exists()){
 			folder.mkdir();
 		}
 		this.mainInterface=new MainInterface();
+		this.mainInterface.setVisible(true);//显示主界面
+		this.setVisible(false);//隐藏登录界面
 	}
 }
 

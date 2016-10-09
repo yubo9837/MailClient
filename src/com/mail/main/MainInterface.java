@@ -2,6 +2,7 @@ package com.mail.main;
 
 import javax.swing.JFrame;
 
+//主界面
 public class MainInterface extends JFrame {
 	public MainInterface() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
