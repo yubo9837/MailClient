@@ -20,6 +20,7 @@ import java.awt.event.KeyEvent;
 
 public class LoginInterface extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel userNameLabel;//提示文本
 	private JButton confirmButton;//确认按钮
@@ -44,7 +45,7 @@ public class LoginInterface extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginInterface() {
-		setTitle("\u767B\u5F55");
+		setTitle("登录");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 338, 141);
 		contentPane = new JPanel();
@@ -53,7 +54,7 @@ public class LoginInterface extends JFrame {
 		contentPane.setLayout(null);
 		
 		//提示文本
-		userNameLabel = new JLabel("\u7528\u6237\u540D");
+		userNameLabel = new JLabel("用户名");
 		userNameLabel.setBounds(24, 26, 54, 15);
 		contentPane.add(userNameLabel);
 		
@@ -63,7 +64,7 @@ public class LoginInterface extends JFrame {
 		userTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==e.VK_ENTER)
+				if(e.getKeyCode()==KeyEvent.VK_ENTER)
 					confirm();
 			}
 		});
@@ -72,13 +73,13 @@ public class LoginInterface extends JFrame {
 		userTextField.setColumns(10);
 		
 		//确认按钮
-		confirmButton = new JButton("\u786E\u5B9A");
+		confirmButton = new JButton("确定");
 		confirmButton.addMouseListener(new MouseAdapter() {
 			//添加鼠标点击事件，点击鼠标时执行confirm()
 			@Override
 			public void mouseClicked(MouseEvent event) {
 				//点击鼠标左键
-				if(event.getButton()==event.BUTTON1)
+				if(event.getButton()==MouseEvent.BUTTON1)
 					confirm();
 			}
 		});
