@@ -2,17 +2,13 @@ package com.mail.main;
 
 import javax.swing.JFrame;
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JToolBar;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import java.awt.Cursor;
-import java.awt.Graphics;
+import java.awt.Dimension;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -21,11 +17,8 @@ import com.mail.box.DeletedBox;
 import com.mail.box.DraftBox;
 import com.mail.box.ReceiveBox;
 import com.mail.box.SentBox;
-import com.sun.corba.se.spi.orbutil.fsm.Action;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 
@@ -101,7 +94,45 @@ public class MainInterface extends JFrame {
 		}
 	};
 	
-	public MainInterface() {
+	private MailContext context;
+	
+	public MainInterface(MailContext context) {
+		this.context=context;
+		init();
+		creatToolBar();
+		this.tree=createTree();
+	}
+	
+	private void openSetup() {
+		if(this.setupInterface==null){
+			this.setupInterface=new SetupInterface(this);
+		}
+		setupInterface.setVisible(true);
+	}
+	
+	public MailContext getContext() {
+		return context;
+	}
+
+	public void setContext(MailContext context) {
+		this.context = context;
+	}
+
+	private JTree createTree() {
+		DefaultMutableTreeNode root=new DefaultMutableTreeNode();
+		root.add(new DefaultMutableTreeNode(new DeletedBox()));
+		root.add(new DefaultMutableTreeNode(new DraftBox()));
+		root.add(new DefaultMutableTreeNode(new ReceiveBox()));
+		root.add(new DefaultMutableTreeNode(new SentBox()));
+		root.add(new DefaultMutableTreeNode(new DraftBox()));
+		
+		JTree tree = new JTree(root);
+		//隐藏根节点
+		tree.setRootVisible(true);
+		return tree;
+	}
+	
+	private void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 718, 441);
 		getContentPane().setLayout(null);
@@ -144,30 +175,6 @@ public class MainInterface extends JFrame {
 		
 		textArea = new JTextArea();
 		mailScrollPane.setViewportView(textArea);
-		
-		creatToolBar();
-		createTree();
-	}
-	
-	private void openSetup() {
-		if(this.setupInterface==null){
-			this.setupInterface=new SetupInterface();
-		}
-		setupInterface.setVisible(true);
-	}
-	
-	private JTree createTree() {
-		DefaultMutableTreeNode root=new DefaultMutableTreeNode();
-		root.add(new DefaultMutableTreeNode(new DeletedBox()));
-		root.add(new DefaultMutableTreeNode(new DraftBox()));
-		root.add(new DefaultMutableTreeNode(new ReceiveBox()));
-		root.add(new DefaultMutableTreeNode(new SentBox()));
-		root.add(new DefaultMutableTreeNode(new DraftBox()));
-		
-		JTree tree = new JTree(root);
-		//隐藏根节点
-		tree.setRootVisible(true);
-		return tree;
 	}
 	
 	//创建toolbar中的按钮
@@ -176,11 +183,13 @@ public class MainInterface extends JFrame {
 		this.toolBar.add(this.sent);
 		this.toolBar.add(this.write);
 		this.toolBar.add(this.reply);
+		this.toolBar.addSeparator(new Dimension(20, 0));
 		this.toolBar.add(this.transmit);
 		this.toolBar.add(this.delete);
 		this.toolBar.add(this.deepDelete);
 		this.toolBar.add(this.revert);
 		this.toolBar.add(this.setup);
+		this.toolBar.addSeparator(new Dimension(20, 0));
 		this.toolBar.add(welcomeLabel);
 	}
 }

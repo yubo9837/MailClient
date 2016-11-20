@@ -3,6 +3,10 @@ package com.mail.main;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.mail.file.FileOp;
+import com.mail.file.PropertiesFile;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -33,11 +37,18 @@ public class SetupInterface extends JFrame {
 	
 	private JButton btn_yes;//确定按钮
 	private JButton btn_no;//取消按钮
+	
+	private MainInterface mainInterface;
 
 	/**
 	 * Create the frame.
 	 */
-	public SetupInterface() {
+	public SetupInterface(MainInterface mainInterface) {
+		this.mainInterface=mainInterface;
+		init(this.mainInterface.getContext());
+	}
+	
+	private void init(MailContext context) {
 		setTitle("设置账号");
 		setBounds(100, 100, 529, 213);
 		contentPane = new JPanel();
@@ -62,6 +73,13 @@ public class SetupInterface extends JFrame {
 		contentPane.add(lbl_pop);
 		
 		btn_yes = new JButton("确定");
+		btn_yes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent event) {
+				if(event.getButton()==MouseEvent.BUTTON1)
+					confirm();
+			}
+		});
 		btn_yes.setBounds(117, 141, 93, 23);
 		contentPane.add(btn_yes);
 		
@@ -114,9 +132,84 @@ public class SetupInterface extends JFrame {
 		passwordField = new JPasswordField();
 		passwordField.setBounds(95, 51, 172, 21);
 		contentPane.add(passwordField);
+		
+		//初始化各个配置
+		//如果之前配置过账号信息，则直接读出来
+		this.textf_mailName.setText(context.getAccount());
+		this.passwordField.setText(context.getPassword());
+		this.textf_SMTP.setText(context.getSmtpServer());
+		this.textf_POP3.setText(context.getPop3Server());
+		this.textf_SMTPport.setText(String.valueOf(context.getSmtpPort()));
+		this.textf_POPport.setText(String.valueOf(context.getPop3Port()));
+	}
+	
+	private void  confirm() {
+		MailContext context=getMailContext(this.mainInterface.getContext());
+		context.setReset(true);
+		PropertiesFile.store(context);
+		this.mainInterface.setContext(context);
+		FileOp.createFolder(context);
+		this.setVisible(false);
 	}
 	//关闭设置界面
 	private void hideSetup() {
 		this.setVisible(false);
+	}
+	
+	private String getPassword() {
+		char[] passes = this.passwordField.getPassword();
+		StringBuffer password = new StringBuffer();
+		for (char c : passes) {
+			password.append(c);
+		}
+		return password.toString();
+	}
+	
+	private MailContext getMailContext(MailContext context) {
+		String account=this.textf_mailName.getText();
+		String password=this.getPassword();
+		//得到密码框内的字符
+		String smtpServer = this.textf_SMTP.getText();
+		String smtpPortS = this.textf_SMTPport.getText();
+		String pop3Server = this.textf_POP3.getText();
+		String pop3PortS = this.textf_POPport.getText();
+		String[] values = new String[]{account, password, smtpServer, smtpPortS, 
+				pop3Server, pop3Server, pop3PortS};
+//		validateRequire(values);
+		//验证端口数字
+//		validateLegal(new String[]{smtpPortS, pop3PortS});
+		//强制转化为int
+		Integer smtpPort = Integer.valueOf(smtpPortS);
+		Integer pop3Port = Integer.valueOf(pop3PortS);
+		context.setAccount(account);
+		context.setPassword(password);
+		context.setSmtpServer(smtpServer);
+		context.setSmtpPort(smtpPort);
+		context.setPop3Server(pop3Server);
+		context.setPop3Port(pop3Port);
+		//由于重新设置了连接信息, 因此设置MailContext的reset值为true
+		context.setReset(true);
+		
+		return context;
+		
+	}
+	
+	private void validateLegal(String[] values) {
+		try {
+			for (String s : values) {
+				Integer.valueOf(s);
+			}
+		} catch (NumberFormatException e) {
+		}
+	}
+	
+	/*
+	 * 验证必填输入
+	 */
+	private void validateRequire(String[] values) {
+		for (String s :values) {
+			if (s.trim().equals("")) {
+			}
+		}
 	}
 }

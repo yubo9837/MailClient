@@ -7,6 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.mail.file.FileOp;
+import com.mail.file.PropertiesFile;
+import com.mail.main.MailContext;
 import com.mail.main.MainInterface;
 
 import javax.swing.JLabel;
@@ -105,9 +108,21 @@ public class LoginInterface extends JFrame {
 		if(!folder.exists()){
 			folder.mkdir();
 		}
-		this.mainInterface=new MainInterface();
-		this.mainInterface.setVisible(true);//显示主界面
-		this.setVisible(false);//隐藏登录界面
+		
+		File config=new File(folder.getAbsolutePath()+FileOp.CONFIG_FILE);
+		try{
+			if(!config.exists()){
+				config.createNewFile();
+			}
+			MailContext mailContext=PropertiesFile.createContext(config);
+			mailContext.setUser(user);
+			
+			this.mainInterface=new MainInterface(mailContext);
+			this.mainInterface.setVisible(true);//显示主界面
+			this.setVisible(false);//隐藏登录界面
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
 
