@@ -4,4 +4,8 @@ public class DeletedBox{
 	public String getText(){
 		return "垃圾箱";
 	}
+	
+	public String  toString() {
+		return getText();
+	}
 }

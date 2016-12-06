@@ -7,7 +7,7 @@ import com.mail.main.MailContext;
 public class FileOp {
 
 	//存放所有用户数据的目录
-	public static final String DATE_FOLDER = "datas" + File.separator;
+	public static final String DATE_FOLDER = "data" + File.separator;
 	//存放具体某个用户配置的properties文件
 	public static final String CONFIG_FILE = File.separator + "mail.properties";
 	
@@ -30,7 +30,7 @@ public class FileOp {
 	 */
 	public static void createFolder(MailContext context) {
 		String accountRoot = getAccountRoot(context);
-		//使用用户当前设置的帐号来生成目录, 例如一个用户叫user1,那么将会在datas/user1/下生成一个帐号目录
+		//使用用户当前设置的帐号来生成目录, 例如一个用户叫user1,那么将会在data/user1/下生成一个帐号目录
 		mkdir(new File(accountRoot));
 		//创建INBOX目录
 		mkdir(new File(accountRoot + INBOX));

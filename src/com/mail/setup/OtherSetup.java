@@ -1,4 +1,4 @@
-package com.mail.main;
+package com.mail.setup;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -6,6 +6,8 @@ import javax.swing.border.EmptyBorder;
 
 import com.mail.file.FileOp;
 import com.mail.file.PropertiesFile;
+import com.mail.main.MailContext;
+import com.mail.main.MainInterface;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -14,7 +16,7 @@ import javax.swing.JPasswordField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class SetupInterface extends JFrame {
+public class OtherSetup extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,7 +45,7 @@ public class SetupInterface extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public SetupInterface(MainInterface mainInterface) {
+	public OtherSetup(MainInterface mainInterface) {
 		this.mainInterface=mainInterface;
 		init(this.mainInterface.getContext());
 	}
@@ -178,7 +180,7 @@ public class SetupInterface extends JFrame {
 //		validateRequire(values);
 		//验证端口数字
 //		validateLegal(new String[]{smtpPortS, pop3PortS});
-		//强制转化为int
+		//强制转化为int类型
 		Integer smtpPort = Integer.valueOf(smtpPortS);
 		Integer pop3Port = Integer.valueOf(pop3PortS);
 		context.setAccount(account);
@@ -192,24 +194,5 @@ public class SetupInterface extends JFrame {
 		
 		return context;
 		
-	}
-	
-	private void validateLegal(String[] values) {
-		try {
-			for (String s : values) {
-				Integer.valueOf(s);
-			}
-		} catch (NumberFormatException e) {
-		}
-	}
-	
-	/*
-	 * 验证必填输入
-	 */
-	private void validateRequire(String[] values) {
-		for (String s :values) {
-			if (s.trim().equals("")) {
-			}
-		}
 	}
 }

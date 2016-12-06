@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.AbstractAction;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
+
 import javax.swing.JToolBar;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
@@ -17,6 +19,8 @@ import com.mail.box.DeletedBox;
 import com.mail.box.DraftBox;
 import com.mail.box.ReceiveBox;
 import com.mail.box.SentBox;
+import com.mail.file.Mail;
+import com.mail.setup.MainSetup;
 
 import javax.swing.JList;
 import javax.swing.JTextArea;
@@ -26,7 +30,8 @@ import javax.swing.JLabel;
 public class MainInterface extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private SetupInterface setupInterface;
+	private MainSetup mainSetup;
+	private WriteMailInterface writeMailInterface;
 	private JToolBar toolBar;//操作选项
 	private JSplitPane splitPane;
 	private JScrollPane treePane;
@@ -39,6 +44,19 @@ public class MainInterface extends JFrame {
 	private JScrollPane mailScrollPane;
 	private JTextArea textArea;
 	private JLabel welcomeLabel;//欢迎语
+	
+	//收件箱的Mail对象集合，代表所有在收件箱中的邮件
+	private List<Mail> receiveMails;
+	//发件箱的邮件集合
+	private List<Mail> outMails;
+	//成功发送的邮件集合
+	private List<Mail> sendMails;
+	//草稿箱的邮件集合
+	private List<Mail> draftMails;
+	//垃圾箱的邮件集合
+	private List<Mail> deleteMails;
+	//当前界面列表所显示的对象
+	private List<Mail> currentMails;
 	
 	//收邮件
 	private AbstractAction in = new AbstractAction("收取邮件") {
@@ -54,6 +72,7 @@ public class MainInterface extends JFrame {
 	//写邮件
 	private AbstractAction write = new AbstractAction("写邮件") {
 		public void actionPerformed(ActionEvent e) {
+			writeMail();
 		}
 	};
 		
@@ -97,17 +116,19 @@ public class MainInterface extends JFrame {
 	private MailContext context;
 	
 	public MainInterface(MailContext context) {
+		setTitle("主界面");
 		this.context=context;
 		init();
 		creatToolBar();
 		this.tree=createTree();
+		this.currentMails=this.sendMails;
 	}
 	
 	private void openSetup() {
-		if(this.setupInterface==null){
-			this.setupInterface=new SetupInterface(this);
+		if(this.mainSetup==null){
+			this.mainSetup=new MainSetup(this);
 		}
-		setupInterface.setVisible(true);
+		mainSetup.setVisible(true);
 	}
 	
 	public MailContext getContext() {
@@ -120,7 +141,7 @@ public class MainInterface extends JFrame {
 
 	private JTree createTree() {
 		DefaultMutableTreeNode root=new DefaultMutableTreeNode();
-		root.add(new DefaultMutableTreeNode(new DeletedBox()));
+		root.add(new DefaultMutableTreeNode("laji"));
 		root.add(new DefaultMutableTreeNode(new DraftBox()));
 		root.add(new DefaultMutableTreeNode(new ReceiveBox()));
 		root.add(new DefaultMutableTreeNode(new SentBox()));
@@ -128,30 +149,33 @@ public class MainInterface extends JFrame {
 		
 		JTree tree = new JTree(root);
 		//隐藏根节点
-		tree.setRootVisible(true);
+		tree.setRootVisible(false);
 		return tree;
 	}
-	
+//	初始化界面
 	private void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 718, 441);
+		setBounds(100, 100, 866, 486);
 		getContentPane().setLayout(null);
 		
 		toolBar = new JToolBar();
+		toolBar.setFloatable(false);
 		toolBar.setBounds(6, 6, 579, 32);
 		getContentPane().add(toolBar);
 		
 		welcomeLabel = new JLabel("欢迎");
 		
 		splitPane = new JSplitPane();
-		splitPane.setBounds(16, 50, 569, 327);
+		splitPane.setBounds(16, 50, 800, 387);
 		getContentPane().add(splitPane);
-		
-		treePane = new JScrollPane();
-		splitPane.setLeftComponent(treePane);
 		
 		tree = new JTree();
 		tree=createTree();
+		
+		treePane = new JScrollPane(this.tree);
+		splitPane.setLeftComponent(treePane);
+		
+		
 		
 		mailList = new JSplitPane();
 		mailList.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -191,5 +215,10 @@ public class MainInterface extends JFrame {
 		this.toolBar.add(this.setup);
 		this.toolBar.addSeparator(new Dimension(20, 0));
 		this.toolBar.add(welcomeLabel);
+	}
+	
+	private void writeMail() {
+		writeMailInterface=new WriteMailInterface();
+		writeMailInterface.setVisible(true);
 	}
 }
