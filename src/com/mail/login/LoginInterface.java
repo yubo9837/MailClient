@@ -48,6 +48,7 @@ public class LoginInterface extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginInterface() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("登录");
 		setBounds(100, 100, 338, 141);
 		contentPane = new JPanel();

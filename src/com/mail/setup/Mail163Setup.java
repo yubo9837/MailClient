@@ -101,9 +101,9 @@ public class Mail163Setup extends JFrame {
 		context.setAccount(account);
 		context.setPassword(password);
 		context.setSmtpServer("smtp.163.com");
-		context.setSmtpPort(33);
+		context.setSmtpPort(25);
 		context.setPop3Server("pop3.163.com");
-		context.setPop3Port(44);
+		context.setPop3Port(110);
 		//由于重新设置了连接信息, 因此设置MailContext的reset值为true
 		context.setReset(true);
 		

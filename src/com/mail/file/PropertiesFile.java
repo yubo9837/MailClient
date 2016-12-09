@@ -43,12 +43,12 @@ public class PropertiesFile {
 			Properties prop = getProperties(propFile);
 			prop.setProperty("account", context.getAccount());
 			prop.setProperty("password", context.getPassword());
-			prop.setProperty("smtpHost", context.getSmtpServer());
+			prop.setProperty("smtpServer", context.getSmtpServer());
 			prop.setProperty("smtpPort", String.valueOf(context.getSmtpPort()));
-			prop.setProperty("pop3Host", context.getPop3Server());
+			prop.setProperty("pop3Server", context.getPop3Server());
 			prop.setProperty("pop3Port", String.valueOf(context.getPop3Port()));
 			FileOutputStream fos = new FileOutputStream(propFile);
-			prop.store(fos, "These are mail configs.");
+			prop.store(fos, "邮箱配置");
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -95,7 +95,7 @@ public class MailContext {
 	}
 
 	private Store store;
-	
+	//接收
 	public Store getStore() {
 		//重置了信息, 设置session为null
 		if (this.reset) {
@@ -117,6 +117,7 @@ public class MailContext {
 				this.store = store;
 			} catch (Exception e) {
 				e.printStackTrace();
+				System.out.println("连接出错");
 //				throw new MailConnectionException("连接邮箱异常，请检查配置");
 			}
 		}
@@ -124,7 +125,7 @@ public class MailContext {
 	}
 	
 	private Session session;
-	
+	//发送
 	public Session getSession() {
 		//重置了信息, 设置session为null
 		if (this.reset) {
