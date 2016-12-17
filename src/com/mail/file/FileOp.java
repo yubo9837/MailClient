@@ -56,13 +56,13 @@ public class FileOp {
 	//得到邮件帐号的根目录
 	private static String getAccountRoot(MailContext context) {
 		String accountRoot = DATE_FOLDER + context.getUser() + 
-		File.separator + context.getAccount() + File.separator;
+				File.separator + context.getAccount() + File.separator;
 		return accountRoot;
 	}
 	
 	//得到某个目录名字, 例如得到file的目录, inbox的目录
-	public static String getBoxPath(MailContext ctx, String folderName) {
-		return getAccountRoot(ctx) + folderName + File.separator;
+	public static String getBoxPath(MailContext context, String folderName) {
+		return getAccountRoot(context) + folderName + File.separator;
 	}
 	
 	//复制文件的方法
@@ -83,8 +83,8 @@ public class FileOp {
 		if (!file.exists()) file.mkdir();
 	}
 	
-	public static List<File> getXMLFiles(MailContext ctx, String box) {
-		String rootPath = getAccountRoot(ctx);
+	public static List<File> getXMLFiles(MailContext context, String box) {
+		String rootPath = getAccountRoot(context);
 		String boxPath = rootPath + box;
 		//得到某个box的目录
 		File boxFolder = new File(boxPath);
@@ -114,11 +114,11 @@ public class FileOp {
 	}
 	
 	//将一个邮件对象使用XStream写到xml文件中
-	public static void writeToXML(MailContext ctx, Mail mail, String boxFolder) {
+	public static void writeToXML(MailContext context, Mail mail, String boxFolder) {
 		//得到mail对应的xml文件的文件名
 		String xmlName = mail.getXmlName();
 		//得到对应的目录路径
-		String boxPath = getAccountRoot(ctx) + boxFolder + File.separator;
+		String boxPath = getAccountRoot(context) + boxFolder + File.separator;
 		File xmlFile = new File(boxPath + xmlName);
 		writeToXML(xmlFile, mail);
 	}

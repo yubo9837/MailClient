@@ -70,7 +70,7 @@ public class SystemHandler {
 	 * @see org.crazyit.foxmail.system.SystemHandler#saveSent(org.crazyit.foxmail.object.Mail, org.crazyit.foxmail.ui.MailContext)
 	 */
 	public void saveSent(Mail mail, MailContext context) {
-		saveFiles(mail, context);
+//		saveFiles(mail, context);
 		//为Mail对象生成xml文件
 		FileOp.writeToXML(context, mail, FileOp.SENT);
 	}

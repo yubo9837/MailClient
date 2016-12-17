@@ -19,8 +19,11 @@ import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.opration.SendMail;
+import com.mail.system.SystemHandler;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class WriteMailInterface extends JFrame {
 
@@ -31,6 +34,8 @@ public class WriteMailInterface extends JFrame {
 	
 	private MainInterface mainInterface;
 	private SendMail sendMail= new SendMail();
+	
+	SystemHandler systemHandler=new SystemHandler();
 
 	//发送
 	private Action send = new AbstractAction("发送") {
@@ -134,13 +139,21 @@ public class WriteMailInterface extends JFrame {
 		return result;
 	}
 	
-	//发送按钮
-	private void send() {
+	//将界面的组件封装成一个Mail对象
+	private Mail getMail(String fromBox) {
 		String xmlName = UUID.randomUUID().toString() + ".xml";
 		Mail mail = new Mail(xmlName,this.mainInterface.getMailContext().getAccount(),
 				getAddressList(this.receive),  this.mailTitle.getText(), 
-				new Date(), "10",true, this.textArea.getText());
+				new Date(), "10",this.textArea.getText(), fromBox);
+		return mail;
+	}
+	//发送按钮
+	private void send() {
+//		String xmlName = UUID.randomUUID().toString() + ".xml";
+		Mail mail = getMail(FileOp.SENT);
 		sendMail.send(mail, this.mainInterface.getMailContext());
+		this.systemHandler.saveSent(mail, this.mainInterface.getMailContext());
+		this.mainInterface.addSentMail(mail);
 	}
 //	保存到收件箱
 	private void saveToSend() {

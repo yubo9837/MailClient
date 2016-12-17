@@ -16,24 +16,23 @@ import javax.mail.Part;
 import javax.mail.Store;
 import javax.mail.internet.MimeUtility;
 
+import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.main.MailContext;
 
-public class ReceiveMail{
-	public ReceiveMail() {
-		
-	}
+public class ReceiveMail {
+	
 	public List<Mail> getMessages(MailContext context) {
 		Folder inbox=getINBOXFolder(context);
 		try {
 			inbox.open(Folder.READ_WRITE);
 			Message[] messages=inbox.getMessages();
 			List<Mail> result=getMailList(context, messages);
+			inbox.close(true);
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new MailEcp(e.getMessage());
 		}
-		return null;
 	}
 	
 	/*
@@ -44,9 +43,8 @@ public class ReceiveMail{
 		try {
 			return store.getFolder("INBOX");
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			throw new MailEcp(e.getMessage());
 		}
-		return null;
 	}
 	
 	//将javamail中的Message对象转换成本项目中的Mail对象
@@ -61,15 +59,15 @@ public class ReceiveMail{
 				String content = getContent(m, new StringBuffer()).toString();
 				//得到邮件的各个值
 				Mail mail = new Mail(xmlName,getSender(m), getAllRecipients(m), 
-						m.getSubject(), getReceivedDate(m), Mail.getSize(m.getSize()), hasRead(m), 
-						content);
+						m.getSubject(), getReceivedDate(m), Mail.getSize(m.getSize()),  
+						content,FileOp.INBOX);
 				result.add(mail);
 			}
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new MailEcp(e.getMessage());
 		}
-		return result;
+		
 	}
 		
 	//得到接收的日期, 优先返回发送日期, 其次返回收信日期

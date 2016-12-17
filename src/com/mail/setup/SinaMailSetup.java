@@ -16,18 +16,18 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class QQMailSetup extends JFrame {
+public class SinaMailSetup extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField qqName;
-	private JPasswordField qqPasswd;
+	private JTextField sinaName;
+	private JPasswordField sinaPasswd;
 	
 	private MainInterface mainInterface;
 
 	/**
 	 * Create the frame.
 	 */
-	public QQMailSetup(MainInterface mainInterface) {
+	public SinaMailSetup(MainInterface mainInterface) {
 		this.mainInterface=mainInterface;
 		init(this.mainInterface.getContext());
 	}
@@ -38,26 +38,26 @@ public class QQMailSetup extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		qqName = new JTextField();
-		qqName.setBounds(119, 69, 147, 21);
-		contentPane.add(qqName);
-		qqName.setColumns(10);
+		sinaName = new JTextField();
+		sinaName.setBounds(119, 69, 147, 21);
+		contentPane.add(sinaName);
+		sinaName.setColumns(10);
 		
-		JLabel lblqqcom = new JLabel("@qq.com");
-		lblqqcom.setBounds(276, 72, 54, 15);
+		JLabel lblqqcom = new JLabel("@sina.com");
+		lblqqcom.setBounds(276, 72, 102, 15);
 		contentPane.add(lblqqcom);
 		
-		JLabel lblQq = new JLabel("QQ邮箱名：");
-		lblQq.setBounds(31, 72, 78, 15);
-		contentPane.add(lblQq);
+		JLabel lblSina = new JLabel("新浪邮箱名：");
+		lblSina.setBounds(31, 72, 78, 15);
+		contentPane.add(lblSina);
 		
 		JLabel label = new JLabel("密码：");
 		label.setBounds(31, 117, 54, 15);
 		contentPane.add(label);
 		
-		qqPasswd = new JPasswordField();
-		qqPasswd.setBounds(119, 114, 147, 21);
-		contentPane.add(qqPasswd);
+		sinaPasswd = new JPasswordField();
+		sinaPasswd.setBounds(119, 114, 147, 21);
+		contentPane.add(sinaPasswd);
 		
 		JButton confirmButtom = new JButton("确定");
 		confirmButtom.addMouseListener(new MouseAdapter() {
@@ -95,14 +95,16 @@ public class QQMailSetup extends JFrame {
 		
 	}
 	private MailContext getMailContext(MailContext context) {
-		String account=this.qqName.getText()+"@qq.com";
-		String password=this.getPassword();
+//		String account=this.sinaName.getText()+"@sina.com";
+		String account="iyuboi@sina.com";//测试用
+//		String password=this.getPassword();
+		String password="19960922Yb";
 		context.setAccount(account);
 		context.setPassword(password);
-		context.setSmtpServer("smtp.qq.com");
-		context.setSmtpPort(33);
-		context.setPop3Server("pop3.qq.com");
-		context.setPop3Port(44);
+		context.setSmtpServer("smtp.sina.com");
+		context.setSmtpPort(25);
+		context.setPop3Server("pop.sina.com");
+		context.setPop3Port(110);
 		//由于重新设置了连接信息, 因此设置MailContext的reset值为true
 		context.setReset(true);
 		
@@ -111,7 +113,7 @@ public class QQMailSetup extends JFrame {
 	}
 	
 	private String getPassword() {
-		char[] passes = this.qqPasswd.getPassword();
+		char[] passes = this.sinaPasswd.getPassword();
 		StringBuffer password = new StringBuffer();
 		for (char c : passes) {
 			password.append(c);

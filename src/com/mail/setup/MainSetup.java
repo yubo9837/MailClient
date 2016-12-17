@@ -17,7 +17,7 @@ public class MainSetup extends JFrame {
 	
 	private OtherSetup otherSetup;
 	private MainInterface mainInterface;
-	private QQMailSetup qqMailSetup;
+	private SinaMailSetup qqMailSetup;
 	private Mail163Setup mail163Setup;
 	/**
 	 * Create the frame.
@@ -37,7 +37,7 @@ public class MainSetup extends JFrame {
 		label.setBounds(22, 36, 130, 15);
 		contentPane.add(label);
 		
-		JButton btnQq = new JButton("QQ邮箱");
+		JButton btnQq = new JButton("新浪邮箱");
 		btnQq.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
@@ -76,7 +76,7 @@ public class MainSetup extends JFrame {
 	}
 	
 	private void confirmQQ() {
-		qqMailSetup=new QQMailSetup(this.mainInterface);
+		qqMailSetup=new SinaMailSetup(this.mainInterface);
 		this.setVisible(false);
 		qqMailSetup.setVisible(true);
 	}

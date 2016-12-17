@@ -30,16 +30,16 @@ public class Mail {
 	private String from;
 	
 	public Mail(String xmlName, String sender, List<String> receivers, String subject, Date receiveDate, String size,
-			boolean hasRead, String content) {
+			String content, String from) {
 		this.xmlName = xmlName;
 		this.sender = sender;
 		this.receivers = receivers;
 		this.subject = subject;
 		this.receiveDate = receiveDate;
 		this.size = size;
-		this.hasRead = hasRead;
+//		this.hasRead = hasRead;
 		this.content = content;
-//		this.from = from;
+		this.from = from;
 	}
 	
 	public String getXmlName() {
