@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JSplitPane;
@@ -41,12 +42,6 @@ public class WriteMailInterface extends JFrame {
 	private Action send = new AbstractAction("发送") {
 		public void actionPerformed(ActionEvent e) {
 			send();
-		}
-	};
-	//保存至发件箱
-	private Action saveToSend = new AbstractAction("保存至发件箱") {
-		public void actionPerformed(ActionEvent e) {
-			saveToSend();
 		}
 	};
 	
@@ -112,7 +107,6 @@ public class WriteMailInterface extends JFrame {
 		toolBar.setBounds(28, 10, 542, 74);
 		contentPane.add(toolBar);
 		toolBar.add(this.send);
-		toolBar.add(this.saveToSend);
 		toolBar.add(this.saveToDraft);
 		toolBar.add(this.uploadFile);
 		toolBar.add(this.deleteFile);
@@ -127,6 +121,10 @@ public class WriteMailInterface extends JFrame {
 		textArea = new JTextArea();
 		textArea.setText("这是一封测试邮件");
 		scrollPane.setViewportView(textArea);
+		JList fileList=new JList();
+//		fileList.addMouseListener(new SendListMouseListener());
+		JScrollPane fileScrollPane = new JScrollPane(fileList);
+		splitPane.setLeftComponent(fileScrollPane);
 	}
 	
 	private List<String> getAddressList(JTextField field) {
@@ -155,13 +153,13 @@ public class WriteMailInterface extends JFrame {
 		this.systemHandler.saveSent(mail, this.mainInterface.getMailContext());
 		this.mainInterface.addSentMail(mail);
 	}
-//	保存到收件箱
-	private void saveToSend() {
-		
-	}
 //保存到草稿箱
 	private void saveToDraft() {
-	
+		//得到界面中的Mail, 该对象的位置在草稿箱
+		Mail mail = getMail(FileOp.DRAFT);
+		systemHandler.saveDraftBox(mail, this.mainInterface.getMailContext());
+		//添加到mainInterface的草稿箱集合中
+		this.mainInterface.addDraftMail(mail);
 	}
 //上传附件
 	private void uploadFile() {
@@ -170,6 +168,23 @@ public class WriteMailInterface extends JFrame {
 //删除附件
 	private void deleteFile() {
 	
+	}
+	
+	//回复邮件初始化界面组件
+	public void replyInit(Mail mail) {
+		this.setVisible(true);
+//		this.fileOp.setListData(mail.getFiles().toArray());
+		this.receive.setText(mail.getSender());
+		this.mailTitle.setText("回复: " + mail.getSubject());
+		this.textArea.setText(mail.getContent());
+	}
+	
+	public void transmitInit(Mail mail) {
+		this.setVisible(true);
+//		this.fileOp.setListData(mail.getFiles().toArray());
+		this.receive.setText(mail.getSender());
+		this.mailTitle.setText(mail.getSubject());
+		this.textArea.setText(mail.getContent());
 	}
 }
 

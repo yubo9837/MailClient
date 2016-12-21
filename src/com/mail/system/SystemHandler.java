@@ -55,16 +55,6 @@ public class SystemHandler {
 	}
 
 	/*
-	 * 保存Mail对象到发件箱
-	 * @see org.crazyit.foxmail.system.SystemHandler#saveOutBox(org.crazyit.foxmail.object.Mail, org.crazyit.foxmail.ui.MailContext)
-	 */
-	public void saveOutBox(Mail mail, MailContext context) {
-		//保存Mail的附件
-		saveFiles(mail, context);
-		FileOp.writeToXML(context, mail, FileOp.OUTBOX);
-	}
-
-	/*
 	 * 保存到发送成功的邮件, 只可能在写邮件的时候出现, 因此该Mail对象中的所有附件, 
 	 * 都在本地系统的另外目录下, 需要将这些附件保存到数据目录下
 	 * @see org.crazyit.foxmail.system.SystemHandler#saveSent(org.crazyit.foxmail.object.Mail, org.crazyit.foxmail.ui.MailContext)
@@ -123,13 +113,11 @@ public class SystemHandler {
 	//得到全部的邮件（收件箱、发件箱、草稿箱、垃圾箱、已发送）的xml文件集合
 	private List<File> getAllFiles(MailContext context) {
 		List<File> inboxXmls = FileOp.getXMLFiles(context, FileOp.INBOX);
-		List<File> outboxXmls = FileOp.getXMLFiles(context, FileOp.OUTBOX);
 		List<File> draftXmls = FileOp.getXMLFiles(context, FileOp.DRAFT);
 		List<File> sentXmls = FileOp.getXMLFiles(context, FileOp.SENT);
 		List<File> deletedXmls = FileOp.getXMLFiles(context, FileOp.DELETED);
 		List<File> result = new ArrayList<File>();
 		result.addAll(inboxXmls);
-		result.addAll(outboxXmls);
 		result.addAll(draftXmls);
 		result.addAll(sentXmls);
 		result.addAll(deletedXmls);

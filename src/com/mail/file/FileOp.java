@@ -1,13 +1,23 @@
 package com.mail.file;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import javax.mail.Part;
+import javax.mail.internet.MimeUtility;
+
+import org.crazyit.foxmail.exception.FileException;
+import org.crazyit.foxmail.object.FileObject;
 
 import com.mail.main.MailContext;
+import com.mail.opration.MailEcp;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.thoughtworks.xstream.XStream;
 
@@ -149,5 +159,36 @@ public class FileOp {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	//为附件创建本地文件, 目录是登录用户的邮箱名的file下
+	public static FileObject createFileFromPart(MailContext context, Part part) {
+		try {
+			//得到文件存放的目录
+			String fileRepository = getBoxPath(context, FILE);
+			String serverFileName = MimeUtility.decodeText(part.getFileName());
+			//生成UUID作为在本地系统中唯一的文件标识
+			String fileName = UUID.randomUUID().toString();
+			File file = new File(fileRepository + fileName + 
+					getFileSufix(serverFileName));
+			//读写文件
+			FileOutputStream fos = new FileOutputStream(file);
+			InputStream is = part.getInputStream();
+			BufferedOutputStream outs = new BufferedOutputStream(fos);
+			//如果附件内容为空part.getSize为-1, 如果直接new byte, 将抛出异常
+			int size = (part.getSize() > 0) ? part.getSize() : 0;
+			byte[] b = new byte[size];
+			is.read(b);
+			outs.write(b);
+			outs.close();
+			is.close();
+			fos.close();
+			//封装对象
+			FileObject fileObject = new FileObject(serverFileName, file);
+			return fileObject;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MailEcp(e.getMessage());
+		}
 	}
 }

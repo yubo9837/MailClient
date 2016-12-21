@@ -18,18 +18,16 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
+
+import com.mail.file.FileObject;
 
 import com.mail.file.Mail;
 import com.mail.main.MailContext;
 
 public class SendMail{
-	public SendMail() {
-		
-	}
-	
 	public Mail send(Mail mail, MailContext context) {
 		try {
-			System.out.println("我要发送");
 			Session session = context.getSession();
 			Message message = new MimeMessage(session);
 			//设置发件人地址
@@ -48,7 +46,14 @@ public class SendMail{
 			BodyPart body = new MimeBodyPart();
 			body.setContent(mail.getContent(), "text/html; charset=utf-8");
 			main.addBodyPart(body);
-			
+			for (FileObject f : mail.getFiles()) {
+				//每个附件的body
+				MimeBodyPart fileBody = new MimeBodyPart();
+				fileBody.attachFile(f.getFile());
+				//为文件名进行转码
+				fileBody.setFileName(MimeUtility.encodeText(f.getSourceName()));
+				main.addBodyPart(fileBody);
+			}
 			//将正文的Multipart对象设入Message中
 			message.setContent(main);
 			Transport.send(message);

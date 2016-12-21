@@ -16,6 +16,7 @@ import javax.mail.Part;
 import javax.mail.Store;
 import javax.mail.internet.MimeUtility;
 
+import com.mail.file.FileObject;
 import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.main.MailContext;
@@ -45,6 +46,23 @@ public class ReceiveMail {
 		} catch (MessagingException e) {
 			throw new MailEcp(e.getMessage());
 		}
+	}
+	
+	//获得邮件的附件
+	private List<FileObject> getFiles(MailContext ctx, Message m) throws Exception {
+		List<FileObject> files = new ArrayList<FileObject>();
+		//是混合类型, 就进行处理
+		if (m.isMimeType("multipart/mixed")) {
+			Multipart mp = (Multipart)m.getContent();
+			//得到邮件内容的Multipart对象并得到内容中Part的数量
+			int count = mp.getCount();
+			for (int i = 1; i < count; i++) {
+				Part part = mp.getBodyPart(i);
+				//在本地创建文件并添加到结果中
+				files.add(FileOp.createFileFromPart(ctx, part));
+			}
+		}
+		return files;
 	}
 	
 	//将javamail中的Message对象转换成本项目中的Mail对象
@@ -95,13 +113,6 @@ public class ReceiveMail {
 		}
 		return result;
 	}	
-		
-	//判断一封邮件是否已读, true表示已读取, false表示没有读取
-	private boolean hasRead(Message m) throws Exception {
-		Flags flags = m.getFlags();
-		if (flags.contains(Flags.Flag.SEEN)) return true;
-		return false;
-	}
 		
 	//得到一封邮件的所有收件人
 	private List<String> getAllRecipients(Message m) throws Exception {

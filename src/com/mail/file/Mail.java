@@ -20,8 +20,6 @@ public class Mail {
 	private Date receiveDate;
 	//邮件大小
 	private String size;
-	//是否已经被阅读
-	private boolean hasRead;
 	//邮件正文
 	private String content;
 	//附件
@@ -37,7 +35,6 @@ public class Mail {
 		this.subject = subject;
 		this.receiveDate = receiveDate;
 		this.size = size;
-//		this.hasRead = hasRead;
 		this.content = content;
 		this.from = from;
 	}
