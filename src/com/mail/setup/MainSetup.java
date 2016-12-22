@@ -23,6 +23,8 @@ public class MainSetup extends JFrame {
 	 * Create the frame.
 	 */
 	public MainSetup(MainInterface mainInterface) {
+		setResizable(false);
+		setTitle("设置");
 		this.mainInterface=mainInterface;
 		initFrame();
 	}

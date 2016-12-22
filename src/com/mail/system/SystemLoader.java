@@ -44,11 +44,6 @@ public class SystemLoader{
 		return result;
 	}
 
-	//实现接口方法, 得到发件箱中的邮件
-	public List<Mail> getOutBoxMails(MailContext context) {
-		return getMails(context, FileOp.OUTBOX);
-	}
-
 	//实现接口方法, 得到已发送的邮件
 	public List<Mail> getSentBoxMails(MailContext context) {
 		return getMails(context, FileOp.SENT);

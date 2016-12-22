@@ -63,14 +63,6 @@ public class Mail {
 		this.receivers = receivers;
 	}
 
-	public boolean getHasRead() {
-		return hasRead;
-	}
-
-	public void setHasRead(boolean hasRead) {
-		this.hasRead = hasRead;
-	}
-
 	public String getSender() {
 		return sender;
 	}

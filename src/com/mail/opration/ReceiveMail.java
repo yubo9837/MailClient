@@ -49,7 +49,7 @@ public class ReceiveMail {
 	}
 	
 	//获得邮件的附件
-	private List<FileObject> getFiles(MailContext ctx, Message m) throws Exception {
+	private List<FileObject> getFiles(MailContext context, Message m) throws Exception {
 		List<FileObject> files = new ArrayList<FileObject>();
 		//是混合类型, 就进行处理
 		if (m.isMimeType("multipart/mixed")) {
@@ -59,7 +59,7 @@ public class ReceiveMail {
 			for (int i = 1; i < count; i++) {
 				Part part = mp.getBodyPart(i);
 				//在本地创建文件并添加到结果中
-				files.add(FileOp.createFileFromPart(ctx, part));
+				files.add(FileOp.createFileFromPart(context, part));
 			}
 		}
 		return files;
@@ -79,6 +79,7 @@ public class ReceiveMail {
 				Mail mail = new Mail(xmlName,getSender(m), getAllRecipients(m), 
 						m.getSubject(), getReceivedDate(m), Mail.getSize(m.getSize()),  
 						content,FileOp.INBOX);
+				mail.setFiles(getFiles(context, m));
 				result.add(mail);
 			}
 			return result;

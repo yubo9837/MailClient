@@ -13,12 +13,8 @@ import java.util.UUID;
 import javax.mail.Part;
 import javax.mail.internet.MimeUtility;
 
-import org.crazyit.foxmail.exception.FileException;
-import org.crazyit.foxmail.object.FileObject;
-
 import com.mail.main.MailContext;
 import com.mail.opration.MailEcp;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.thoughtworks.xstream.XStream;
 
 public class FileOp {
@@ -31,8 +27,6 @@ public class FileOp {
 	public static final String CONFIG_FILE = File.separator + "mail.properties";
 	//收件箱的目录名
 	public static final String INBOX = "inbox";
-	//发件箱的目录名
-	public static final String OUTBOX = "outbox";
 	//已发送的目录名
 	public static final String SENT = "sent";
 	//草稿箱的目录名
@@ -51,8 +45,6 @@ public class FileOp {
 		mkdir(new File(accountRoot));
 		//创建INBOX目录
 		mkdir(new File(accountRoot + INBOX));
-		//发件箱
-		mkdir(new File(accountRoot + OUTBOX));
 		//已发送
 		mkdir(new File(accountRoot + SENT));
 		//草稿箱

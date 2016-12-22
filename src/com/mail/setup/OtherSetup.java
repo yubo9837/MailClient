@@ -46,12 +46,13 @@ public class OtherSetup extends JFrame {
 	 * Create the frame.
 	 */
 	public OtherSetup(MainInterface mainInterface) {
+		setResizable(false);
 		this.mainInterface=mainInterface;
 		init(this.mainInterface.getContext());
 	}
 	
 	private void init(MailContext context) {
-		setTitle("设置账号");
+		setTitle("other");
 		setBounds(100, 100, 529, 213);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

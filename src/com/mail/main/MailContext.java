@@ -135,7 +135,6 @@ public class MailContext {
 		}
 		if (this.session == null) {
 			Properties props = System.getProperties();
-			System.out.println(this.getSmtpPort());
 			props.put("mail.smtp.host", this.getSmtpServer());  
 			props.put("mail.smtp.port", this.getSmtpPort());
 			props.put("mail.smtp.auth", true);

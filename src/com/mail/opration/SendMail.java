@@ -57,10 +57,12 @@ public class SendMail{
 			//将正文的Multipart对象设入Message中
 			message.setContent(main);
 			Transport.send(message);
+			return mail;
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new MailEcp(e.getMessage());
 		}
-		return mail;
+		
 	}
 	//获得所有的收件人地址或者抄送的地址
 	private Address[] getAddress(List<String> addList) throws Exception {

@@ -35,14 +35,14 @@ public class SystemHandler {
 		//得到所有的附件并删除
 		List<FileObject> files = mail.getFiles();
 		//删除附件
-		for (FileObject f : files) f.getFile().delete();
+		for (FileObject f : files) 
+			f.getFile().delete();
 		//删除xml文件
 		if (xmlFile.exists()) xmlFile.delete();
 	}
 
 	/*
 	 * 将邮件对象保存到草稿箱的目录中
-	 * @see org.crazyit.foxmail.system.SystemHandler#saveDraftBox(org.crazyit.foxmail.object.Mail, org.crazyit.foxmail.ui.MailContext)
 	 */
 	public void saveDraftBox(Mail mail, MailContext context) {
 		//保存Mail的附件
@@ -57,7 +57,6 @@ public class SystemHandler {
 	/*
 	 * 保存到发送成功的邮件, 只可能在写邮件的时候出现, 因此该Mail对象中的所有附件, 
 	 * 都在本地系统的另外目录下, 需要将这些附件保存到数据目录下
-	 * @see org.crazyit.foxmail.system.SystemHandler#saveSent(org.crazyit.foxmail.object.Mail, org.crazyit.foxmail.ui.MailContext)
 	 */
 	public void saveSent(Mail mail, MailContext context) {
 //		saveFiles(mail, context);

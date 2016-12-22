@@ -28,6 +28,8 @@ public class SinaMailSetup extends JFrame {
 	 * Create the frame.
 	 */
 	public SinaMailSetup(MainInterface mainInterface) {
+		setResizable(false);
+		setTitle("新浪邮箱");
 		this.mainInterface=mainInterface;
 		init(this.mainInterface.getContext());
 	}

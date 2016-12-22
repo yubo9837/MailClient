@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -21,11 +22,15 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 
 import javax.swing.JTree;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import com.mail.file.FileObject;
 
 import com.mail.box.MailBox;
 import com.mail.box.DeletedBox;
@@ -58,13 +63,13 @@ public class MainInterface extends JFrame {
 	private JScrollPane tablePane;
 	private JSplitPane splitPane_1;
 	private JScrollPane filePane;//文件显示区
-	private JList list;
+	private JList fileList;
 	private JScrollPane mailScrollPane;
 	private JTextArea textArea;
 	private JLabel welcomeLabel;//欢迎语
 	
 	//当前打开的文件对象
-	private Mail currentMail;
+//	private Mail currentMail;
 	
 	//邮件列表的JTable
 	private MailListTable mailListTable;
@@ -144,7 +149,7 @@ public class MainInterface extends JFrame {
 	private long receiveInterval = 1000 * 10;
 	public MainInterface(MailContext context) {
 		writeMailInterface=new WriteMailInterface(this);
-		setTitle("主界面");
+		setTitle("mailClient");
 		this.context=context;
 		initMails();
 		init();
@@ -171,8 +176,9 @@ public class MainInterface extends JFrame {
 	//清空当前打开的邮件及对应的界面组件
 	public void cleanMailInfo() {
 		//设置当前打开的邮件对象为空
-		this.currentMail = null;
+//		this.currentMail = null;
 		this.textArea.setText("");
+		this.fileList.setListData(new Object[]{});
 	}
 
 	private JTree createTree() {
@@ -239,8 +245,10 @@ public class MainInterface extends JFrame {
 		filePane = new JScrollPane();
 		splitPane_1.setLeftComponent(filePane);
 		
-		list = new JList();
-		filePane.setViewportView(list);
+		fileList = new JList();
+		this.fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.fileList.addMouseListener(new FileMouseListener());
+		filePane.setViewportView(fileList);
 		
 		mailScrollPane = new JScrollPane();
 		mailScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -379,7 +387,7 @@ public class MainInterface extends JFrame {
 			//将邮件对应的xml文件放到deleted的目录中
 			this.systemHandler.delete(mail, this.context);
 		}
-		this.currentMail = null;
+//		this.currentMail = null;
 		//刷新列表
 		refreshTable();
 		cleanMailInfo();
@@ -408,7 +416,7 @@ public class MainInterface extends JFrame {
 			//还原到各个集合中
 			revertMailToList(mail);
 		}
-		this.currentMail = null;
+//		this.currentMail = null;
 		refreshTable();
 		cleanMailInfo();
 	}
@@ -462,8 +470,10 @@ public class MainInterface extends JFrame {
 		this.textArea.append("邮件正文：  ");
 		this.textArea.append("\n\n");
 		this.textArea.append(mail.getContent());
+		//添加附件
+		this.fileList.setListData(mail.getFiles().toArray());
 		//设置当前被打开的邮件对象
-		this.currentMail = mail;
+//		this.currentMail = mail;
 	}
 	
 	//获取在列表中所选择的Mail对象

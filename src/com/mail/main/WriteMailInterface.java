@@ -1,6 +1,7 @@
 package com.mail.main;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -16,10 +18,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.ListModel;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import com.mail.file.FileObject;
 import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.opration.SendMail;
@@ -64,11 +68,13 @@ public class WriteMailInterface extends JFrame {
 		}
 	};
 	private JTextArea textArea;
+	private JList fileList;
 
 	/**
 	 * Create the frame.
 	 */
 	public WriteMailInterface(MainInterface mainInterface) {
+		setResizable(false);
 		this.mainInterface=mainInterface;
 		setTitle("写邮件");
 		init();
@@ -121,7 +127,7 @@ public class WriteMailInterface extends JFrame {
 		textArea = new JTextArea();
 		textArea.setText("这是一封测试邮件");
 		scrollPane.setViewportView(textArea);
-		JList fileList=new JList();
+		fileList=new JList();
 //		fileList.addMouseListener(new SendListMouseListener());
 		JScrollPane fileScrollPane = new JScrollPane(fileList);
 		splitPane.setLeftComponent(fileScrollPane);
@@ -143,37 +149,56 @@ public class WriteMailInterface extends JFrame {
 		Mail mail = new Mail(xmlName,this.mainInterface.getMailContext().getAccount(),
 				getAddressList(this.receive),  this.mailTitle.getText(), 
 				new Date(), "10",this.textArea.getText(), fromBox);
+		mail.setFiles(getFileListObjects());
 		return mail;
 	}
 	//发送按钮
 	private void send() {
 //		String xmlName = UUID.randomUUID().toString() + ".xml";
 		Mail mail = getMail(FileOp.SENT);
-		sendMail.send(mail, this.mainInterface.getMailContext());
+		this.sendMail.send(mail, this.mainInterface.getMailContext());
 		this.systemHandler.saveSent(mail, this.mainInterface.getMailContext());
 		this.mainInterface.addSentMail(mail);
+//		clean();
+//		this.setVisible(false);
 	}
+
+	//清空界面各个元素
+	private void clean() {
+		this.receive.setText("");
+		this.mailTitle.setText("");
+		this.textArea.setText("");
+		this.fileList.setListData(new Object[]{});
+	}
+	
 //保存到草稿箱
 	private void saveToDraft() {
 		//得到界面中的Mail, 该对象的位置在草稿箱
 		Mail mail = getMail(FileOp.DRAFT);
-		systemHandler.saveDraftBox(mail, this.mainInterface.getMailContext());
+		this.systemHandler.saveDraftBox(mail, this.mainInterface.getMailContext());
 		//添加到mainInterface的草稿箱集合中
 		this.mainInterface.addDraftMail(mail);
 	}
 //上传附件
 	private void uploadFile() {
-	
+		FileChooser chooser = new FileChooser(this);
+		chooser.showOpenDialog(this);
 	}
 //删除附件
 	private void deleteFile() {
-	
+		FileObject file = (FileObject)this.fileList.getSelectedValue();
+		if (file == null) {
+			return;
+		}
+		List<FileObject> files = getFileListObjects();
+		files.remove(file);
+		this.fileList.setListData(files.toArray());
 	}
 	
 	//回复邮件初始化界面组件
 	public void replyInit(Mail mail) {
 		this.setVisible(true);
-//		this.fileOp.setListData(mail.getFiles().toArray());
+//		this.fileList.setListData(mail.getFiles().toArray());
 		this.receive.setText(mail.getSender());
 		this.mailTitle.setText("回复: " + mail.getSubject());
 		this.textArea.setText(mail.getContent());
@@ -186,5 +211,41 @@ public class WriteMailInterface extends JFrame {
 		this.mailTitle.setText(mail.getSubject());
 		this.textArea.setText(mail.getContent());
 	}
+	
+	//从JList中得到附件的对象集合
+	public List<FileObject> getFileListObjects() {
+		ListModel model = this.fileList.getModel();
+		List<FileObject> files = new ArrayList<FileObject>();
+		for (int i = 0; i < model.getSize(); i++) {
+			files.add((FileObject)model.getElementAt(i));
+		}
+		return files;
+	}
+	
+	public JList getFileList() {
+		return this.fileList;
+	}
+}
+
+class FileChooser extends JFileChooser {
+	
+	WriteMailInterface writeMailInterface;
+	
+	public FileChooser(WriteMailInterface writeMailInterface) {
+		this.writeMailInterface = writeMailInterface;
+		this.setFileSelectionMode(FILES_ONLY); 
+	}
+
+	@Override
+	public void approveSelection() {
+		File file = this.getSelectedFile();
+		FileObject fileObject = new FileObject(file.getName(), file);
+		List<FileObject> files = this.writeMailInterface.getFileListObjects();
+		files.add(fileObject);
+		writeMailInterface.getFileList().setListData(files.toArray());
+		super.approveSelection();
+	}
+	
+	
 }
 

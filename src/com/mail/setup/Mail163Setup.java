@@ -28,6 +28,8 @@ public class Mail163Setup extends JFrame {
 	 * Create the frame.
 	 */
 	public Mail163Setup(MainInterface mainInterface) {
+		setTitle("163邮箱");
+		setResizable(false);
 		this.mainInterface=mainInterface;
 		init(this.mainInterface.getContext());
 	}
