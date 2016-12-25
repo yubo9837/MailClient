@@ -14,7 +14,7 @@ import javax.mail.Part;
 import javax.mail.internet.MimeUtility;
 
 import com.mail.main.MailContext;
-import com.mail.opration.MailEcp;
+import com.mail.opration.MailException;
 import com.thoughtworks.xstream.XStream;
 
 public class FileOp {
@@ -41,9 +41,9 @@ public class FileOp {
 	 */
 	public static void createFolder(MailContext context) {
 		String accountRoot = getAccountRoot(context);
-		//使用用户当前设置的帐号来生成目录, 例如一个用户叫user1,那么将会在data/user1/下生成一个帐号目录
+		//使用用户当前设置的帐号来生成目录
 		mkdir(new File(accountRoot));
-		//创建INBOX目录
+		//收件箱目录
 		mkdir(new File(accountRoot + INBOX));
 		//已发送
 		mkdir(new File(accountRoot + SENT));
@@ -180,7 +180,7 @@ public class FileOp {
 			return fileObject;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new MailEcp(e.getMessage());
+			throw new MailException(e.getMessage());
 		}
 	}
 }

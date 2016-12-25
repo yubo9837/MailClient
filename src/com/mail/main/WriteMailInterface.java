@@ -28,7 +28,6 @@ import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.opration.SendMail;
 import com.mail.system.SystemHandler;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class WriteMailInterface extends JFrame {
 
@@ -36,6 +35,8 @@ public class WriteMailInterface extends JFrame {
 	private JPanel contentPane;
 	private JTextField receive;
 	private JTextField mailTitle;
+	private JTextArea textArea;
+	private JList fileList;
 	
 	private MainInterface mainInterface;
 	private SendMail sendMail= new SendMail();
@@ -67,8 +68,7 @@ public class WriteMailInterface extends JFrame {
 			deleteFile();
 		}
 	};
-	private JTextArea textArea;
-	private JList fileList;
+	
 
 	/**
 	 * Create the frame.
@@ -154,13 +154,12 @@ public class WriteMailInterface extends JFrame {
 	}
 	//发送按钮
 	private void send() {
-//		String xmlName = UUID.randomUUID().toString() + ".xml";
 		Mail mail = getMail(FileOp.SENT);
 		this.sendMail.send(mail, this.mainInterface.getMailContext());
 		this.systemHandler.saveSent(mail, this.mainInterface.getMailContext());
 		this.mainInterface.addSentMail(mail);
-//		clean();
-//		this.setVisible(false);
+		clean();
+		this.setVisible(false);
 	}
 
 	//清空界面各个元素
@@ -198,16 +197,14 @@ public class WriteMailInterface extends JFrame {
 	//回复邮件初始化界面组件
 	public void replyInit(Mail mail) {
 		this.setVisible(true);
-//		this.fileList.setListData(mail.getFiles().toArray());
 		this.receive.setText(mail.getSender());
+		this.fileList.setListData(mail.getFiles().toArray());
 		this.mailTitle.setText("回复: " + mail.getSubject());
 		this.textArea.setText(mail.getContent());
 	}
 	
 	public void transmitInit(Mail mail) {
 		this.setVisible(true);
-//		this.fileOp.setListData(mail.getFiles().toArray());
-		this.receive.setText(mail.getSender());
 		this.mailTitle.setText(mail.getSubject());
 		this.textArea.setText(mail.getContent());
 	}
@@ -245,7 +242,5 @@ class FileChooser extends JFileChooser {
 		writeMailInterface.getFileList().setListData(files.toArray());
 		super.approveSelection();
 	}
-	
-	
 }
 

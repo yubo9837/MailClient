@@ -117,8 +117,6 @@ public class MailContext {
 				this.store = store;
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("连接出错");
-//				throw new MailConnectionException("连接邮箱异常，请检查配置");
 			}
 		}
 		return this.store;

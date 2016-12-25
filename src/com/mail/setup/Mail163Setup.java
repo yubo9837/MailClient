@@ -95,7 +95,7 @@ public class Mail163Setup extends JFrame {
 	}
 	
 	private void  hideFrame() {
-		
+		this.setVisible(false);
 	}
 	private MailContext getMailContext(MailContext context) {
 		String account=this.mail163Name.getText()+"@163.com";

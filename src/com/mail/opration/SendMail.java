@@ -60,7 +60,7 @@ public class SendMail{
 			return mail;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new MailEcp(e.getMessage());
+			throw new MailException(e.getMessage());
 		}
 		
 	}

@@ -16,11 +16,6 @@ import javax.swing.JOptionPane;
 import com.mail.file.FileObject;
 import com.mail.file.FileOp;
 
-
-/**
- * @author yubo
- *
- */
 public class FileMouseListener extends MouseAdapter {
 
 	@Override

@@ -2,13 +2,11 @@ package com.mail.main;
 
 import javax.swing.JFrame;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -20,17 +18,15 @@ import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 
 import javax.swing.JTree;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
-import com.mail.file.FileObject;
 
 import com.mail.box.MailBox;
 import com.mail.box.DeletedBox;
@@ -43,44 +39,51 @@ import com.mail.opration.ReceiveMail;
 import com.mail.setup.MainSetup;
 import com.mail.system.SystemHandler;
 import com.mail.system.SystemLoader;
+import com.mail.main.FileMouseListener;
 
 import javax.swing.JList;
 import javax.swing.JTextArea;
-import javax.swing.JLabel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 //主界面
 public class MainInterface extends JFrame {
-
 	private static final long serialVersionUID = 1L;
+
+	private MailContext context;
+	
 	private MainSetup mainSetup;
 	private WriteMailInterface writeMailInterface;
-	private JToolBar toolBar;//操作选项
+	//工具条
+	private JToolBar toolBar;
 	private JSplitPane splitPane;
 	private JScrollPane treePane;
 	private JTree tree;
-	private JSplitPane mailList;//邮件列表
+	//邮件列表
+	private JSplitPane mailList;
 	private JScrollPane tablePane;
 	private JSplitPane splitPane_1;
-	private JScrollPane filePane;//文件显示区
+	//文件显示区
+	private JScrollPane filePane;
 	private JList fileList;
 	private JScrollPane mailScrollPane;
 	private JTextArea textArea;
-	private JLabel welcomeLabel;//欢迎语
-	
-	//当前打开的文件对象
-//	private Mail currentMail;
-	
+	private JTextField searchText;
 	//邮件列表的JTable
 	private MailListTable mailListTable;
 	
-	//收件箱的Mail对象集合，代表所有在收件箱中的邮件
+	//收件箱的邮件对象集合
 	private List<Mail> inMails;
-	//成功发送的邮件集合
+	//发件箱
 	private List<Mail> sentMails;
-	//草稿箱的邮件集合
+	//草稿箱
 	private List<Mail> draftMails;
-	//垃圾箱的邮件集合
+	//垃圾箱
 	private List<Mail> deleteMails;
 	//当前界面列表所显示的对象
 	private List<Mail> currentMails;
@@ -145,68 +148,37 @@ public class MainInterface extends JFrame {
 		}
 	};
 	
-	private MailContext context;
+	
+//	10秒延时
 	private long receiveInterval = 1000 * 10;
 	public MainInterface(MailContext context) {
 		writeMailInterface=new WriteMailInterface(this);
 		setTitle("mailClient");
 		this.context=context;
 		initMails();
-		init();
+		initFrame();
 		initListeners();
 		Timer timer = new Timer();
 //		timer.schedule(new ReceiveTask(this), 10000, this.receiveInterval);
 	}
 	
-	private void openSetup() {
-		if(this.mainSetup==null){
-			this.mainSetup=new MainSetup(this);
-		}
-		mainSetup.setVisible(true);
+	//初始化时创建各个box中的数据
+	private void initMails() {
+		this.inMails = this.systemLoader.getInBoxMails(this.context);
+		this.draftMails = this.systemLoader.getDraftBoxMails(this.context);
+		this.deleteMails = this.systemLoader.getDeletedBoxMails(this.context);
+		this.sentMails = this.systemLoader.getSentBoxMails(this.context);
 	}
 	
-	public MailContext getContext() {
-		return context;
-	}
-
-	public void setContext(MailContext context) {
-		this.context = context;
-	}
-	
-	//清空当前打开的邮件及对应的界面组件
-	public void cleanMailInfo() {
-		//设置当前打开的邮件对象为空
-//		this.currentMail = null;
-		this.textArea.setText("");
-		this.fileList.setListData(new Object[]{});
-	}
-
-	private JTree createTree() {
-		DefaultMutableTreeNode root=new DefaultMutableTreeNode();
-		root.add(new DefaultMutableTreeNode(new InBox()));
-		root.add(new DefaultMutableTreeNode(new DraftBox()));
-		root.add(new DefaultMutableTreeNode(new SentBox()));
-		root.add(new DefaultMutableTreeNode(new DeletedBox()));
-		
-		JTree tree = new JTree(root);
-		//加入鼠标监听器
-		tree.addMouseListener(new TreeListener(this));
-		//隐藏根节点
-		tree.setRootVisible(false);
-		//设置节点处理类
-		TreeSelece treeSelece = new TreeSelece();
-		tree.setCellRenderer(treeSelece);
-		return tree;
-	}
 //	初始化界面
-	private void init() {
+	private void initFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1300, 700);
 		getContentPane().setLayout(null);
 		//工具栏
 		toolBar = new JToolBar();
 		toolBar.setFloatable(false);
-		toolBar.setBounds(6, 6, 579, 32);
+		toolBar.setBounds(6, 6, 547, 32);
 		getContentPane().add(toolBar);
 		creatToolBar();
 		
@@ -226,7 +198,6 @@ public class MainInterface extends JFrame {
 		DefaultTableModel tableModel=new DefaultTableModel();
 		tableModel.setDataVector(createViewDatas(this.currentMails), getListColumn());
 		this.mailListTable=new MailListTable(tableModel);
-		mailListTable.setAutoCreateRowSorter(true);
 		
 		setTableFace();
 		mailList = new JSplitPane();
@@ -256,23 +227,95 @@ public class MainInterface extends JFrame {
 		
 		textArea = new JTextArea();
 		textArea.setEditable(false);
-		textArea.setLineWrap(true);        //激活自动换行功能 
+		//自动换行 
+		textArea.setLineWrap(true);        
 		textArea.setWrapStyleWord(true);  
 		mailScrollPane.setViewportView(textArea);
-		//设置欢迎语
-		welcomeLabel = new JLabel("欢迎:"+context.getUser());
-		welcomeLabel.setBounds(690, 23, 84, 15);
-		getContentPane().add(welcomeLabel);
+//		搜索框
+		searchText = new JTextField();
+		searchText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if(event.getKeyChar()==KeyEvent.VK_ENTER)
+				search(searchText.getText());
+			}
+		});
+		searchText.setBounds(611, 17, 169, 21);
+		getContentPane().add(searchText);
+		searchText.setColumns(10);
+//		搜索按钮
+		JButton searchButton = new JButton(new ImageIcon("image/search.png"));
+		searchButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent event) {
+				String searchValue=searchText.getText();
+				if(event.getButton()==1){
+					//搜索
+					search(searchText.getText());
+				}
+			}
+		});
+		searchButton.setBounds(781, 15, 19, 20);
+		getContentPane().add(searchButton);
 	}
-	//初始化时创建各个box中的数据
-	private void initMails() {
-		this.inMails = this.systemLoader.getInBoxMails(this.context);
-		this.draftMails = this.systemLoader.getDraftBoxMails(this.context);
-		this.deleteMails = this.systemLoader.getDeletedBoxMails(this.context);
-		this.sentMails = this.systemLoader.getSentBoxMails(this.context);
+//	搜索功能实现方法
+	private void search(String str){
+		int rowCount = mailListTable.getRowCount();
+		int columnCount = mailListTable.getColumnCount();
+		for (int i = 0; i < rowCount; i++) {
+			for (int k = 0; k < columnCount; k++) {
+				String value = mailListTable.getValueAt(i, k).toString();
+				if (value.contains(str)) {
+					mailListTable.getSelectionModel().setSelectionInterval(i, i);
+					Rectangle cellRect = mailListTable.getCellRect(i, k, true);
+					mailListTable.scrollRectToVisible(cellRect);
+					return;
+				}
+			}
+		}
 	}
+//	初始化监听器
+	private void initListeners() {
+		//列表选择监听器
+		this.mailListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+			public void valueChanged(ListSelectionEvent event) {
+				//当选择行时鼠标释放时才执行
+				if (!event.getValueIsAdjusting()) {
+					//如果没有选中任何一行, 则返回
+					if (mailListTable.getSelectedRowCount() != 1) return;
+					viewMail();
+				}
+			}
+		});
+	}
+	
+	private JTree createTree() {
+		DefaultMutableTreeNode root=new DefaultMutableTreeNode();
+		root.add(new DefaultMutableTreeNode(new InBox()));
+		root.add(new DefaultMutableTreeNode(new DraftBox()));
+		root.add(new DefaultMutableTreeNode(new SentBox()));
+		root.add(new DefaultMutableTreeNode(new DeletedBox()));
+		
+		JTree tree = new JTree(root);
+		//加入鼠标监听器
+		tree.addMouseListener(new TreeListener(this));
+		//隐藏根节点
+		tree.setRootVisible(false);
+		//设置节点处理类
+		TreeSelece treeSelece = new TreeSelece();
+		tree.setCellRenderer(treeSelece);
+		return tree;
+	}
+	
+	//清空当前打开的邮件及对应的界面组件
+	public void cleanMailInfo() {
+		this.textArea.setText("");
+		this.fileList.setListData(new Object[]{});
+	}
+
 	//时间格式对象
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+	
 	
 	//格式时间
 	private String formatDate(Date date) {
@@ -285,8 +328,8 @@ public class MainInterface extends JFrame {
 		this.mailListTable.getColumn("xmlName").setMinWidth(0);
 		this.mailListTable.getColumn("xmlName").setMaxWidth(0);
 		this.mailListTable.getColumn("发件人").setMinWidth(200);
-		this.mailListTable.getColumn("主题").setMinWidth(320);
-		this.mailListTable.getColumn("日期").setMinWidth(130);
+		this.mailListTable.getColumn("主题").setMinWidth(300);
+		this.mailListTable.getColumn("日期").setMinWidth(100);
 		this.mailListTable.getColumn("大小").setMinWidth(80);
 		this.mailListTable.setRowHeight(30);
 	}
@@ -322,28 +365,24 @@ public class MainInterface extends JFrame {
 	private void creatToolBar() {
 		this.toolBar.add(this.in);
 		this.toolBar.add(this.write);
-		this.toolBar.add(this.reply);
 		this.toolBar.addSeparator(new Dimension(20, 0));
+		
+		this.toolBar.add(this.reply);
 		this.toolBar.add(this.transmit);
 		this.toolBar.add(this.delete);
 		this.toolBar.add(this.deepDelete);
 		this.toolBar.add(this.revert);
-		this.toolBar.add(this.setup);
 		this.toolBar.addSeparator(new Dimension(20, 0));
+		
+		this.toolBar.add(this.setup);
 	}
 	
+//	写邮件实现
 	private void writeMail() {
 		this.writeMailInterface.setVisible(true);
 	}
 	
-	public void setMailContext(MailContext context) {
-		this.context = context;
-	}
-	
-	public MailContext getMailContext() {
-		return this.context;
-	}
-	
+//	收邮件实现
 	void receiveMail() {
 		try {
 			List<Mail> newMails=this.receiveMail.getMessages(this.context);
@@ -356,25 +395,21 @@ public class MainInterface extends JFrame {
 		}
 	}
 	
-	private boolean noSelectData(Mail mail) {
-		if (mail == null) {
-			return true;
-		}
-		return false;
-	}
-	
+//	回复邮件
 	void reply(){
 		Mail mail=getSelectMail();
 		if(noSelectData(mail)) return;
 		this.writeMailInterface.replyInit(mail);
 	}
 	
+//	转发邮件
 	void transmit(){
 		Mail mail = getSelectMail();
 		if (noSelectData(mail)) return;
 		this.writeMailInterface.transmitInit(mail);
 	}
-
+	
+//	删除邮件
 	void delete(){
 		Mail mail = getSelectMail();
 		if (noSelectData(mail)) return;
@@ -387,11 +422,12 @@ public class MainInterface extends JFrame {
 			//将邮件对应的xml文件放到deleted的目录中
 			this.systemHandler.delete(mail, this.context);
 		}
-//		this.currentMail = null;
 		//刷新列表
 		refreshTable();
 		cleanMailInfo();
 	}
+	
+//	彻底删除邮件
 	void realDelete(){
 		Mail mail = getSelectMail();
 		if (noSelectData(mail)) return;
@@ -404,6 +440,7 @@ public class MainInterface extends JFrame {
 		cleanMailInfo();
 	}
 	
+//	还原邮件
 	void revert(){
 		Mail mail = getSelectMail();
 		if (noSelectData(mail)) return;
@@ -416,10 +453,26 @@ public class MainInterface extends JFrame {
 			//还原到各个集合中
 			revertMailToList(mail);
 		}
-//		this.currentMail = null;
 		refreshTable();
 		cleanMailInfo();
 	}
+	
+	public void setMailContext(MailContext context) {
+		this.context = context;
+	}
+	
+	public MailContext getMailContext() {
+		return this.context;
+	}
+
+	
+	private boolean noSelectData(Mail mail) {
+		if (mail == null) {
+			return true;
+		}
+		return false;
+	}
+
 	
 	//还原Mail对象到各个相应的集合
 	private void revertMailToList(Mail mail) {
@@ -440,29 +493,14 @@ public class MainInterface extends JFrame {
 		}
 	}
 	
-	private void initListeners() {
-		//列表选择监听器
-		this.mailListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-			public void valueChanged(ListSelectionEvent event) {
-				//当选择行时鼠标释放时才执行
-				
-				if (!event.getValueIsAdjusting()) {
-					//如果没有选中任何一行, 则返回
-					if (mailListTable.getSelectedRowCount() != 1) return;
-					viewMail();
-				}
-			}
-		});
-	}
-	
 	//查看一封邮件
 	private void viewMail() {
 		this.textArea.setText("");
 		Mail mail = getSelectMail();
 		this.textArea.append("发送人：  " + mail.getSender());
 		this.textArea.append("\n");
-		this.textArea.append("收件人:   " + mail.getReceiverString());
-		this.textArea.append("\n");
+//		this.textArea.append("收件人:   " + mail.getReceiverString());
+//		this.textArea.append("\n");
 		this.textArea.append("主题：  " + mail.getSubject());
 		this.textArea.append("\n");
 		this.textArea.append("接收日期：  " + dateFormat.format(mail.getReceiveDate()));
@@ -472,8 +510,6 @@ public class MainInterface extends JFrame {
 		this.textArea.append(mail.getContent());
 		//添加附件
 		this.fileList.setListData(mail.getFiles().toArray());
-		//设置当前被打开的邮件对象
-//		this.currentMail = mail;
 	}
 	
 	//获取在列表中所选择的Mail对象
@@ -542,6 +578,21 @@ public class MainInterface extends JFrame {
 		DefaultTableModel tableModel = (DefaultTableModel)this.mailListTable.getModel();
 		tableModel.setDataVector(createViewDatas(this.currentMails), getListColumn());
 		setTableFace();
+	}
+	
+	private void openSetup() {
+		if(this.mainSetup==null){
+			this.mainSetup=new MainSetup(this);
+		}
+		mainSetup.setVisible(true);
+	}
+	
+	public MailContext getContext() {
+		return context;
+	}
+
+	public void setContext(MailContext context) {
+		this.context = context;
 	}
 }
 

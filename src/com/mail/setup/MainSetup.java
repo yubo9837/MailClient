@@ -1,11 +1,14 @@
 package com.mail.setup;
-
+/*
+ * 邮箱选择界面
+ */
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import com.mail.main.MainInterface;
 
 import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,7 +20,7 @@ public class MainSetup extends JFrame {
 	
 	private OtherSetup otherSetup;
 	private MainInterface mainInterface;
-	private SinaMailSetup qqMailSetup;
+	private SinaMailSetup sinaMailSetup;
 	private Mail163Setup mail163Setup;
 	/**
 	 * Create the frame.
@@ -39,25 +42,26 @@ public class MainSetup extends JFrame {
 		label.setBounds(22, 36, 130, 15);
 		contentPane.add(label);
 		
-		JButton btnQq = new JButton("新浪邮箱");
-		btnQq.addMouseListener(new MouseAdapter() {
+		JButton btnSina = new JButton(new ImageIcon("image/sina.png"));
+		btnSina.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
 				if(event.getButton()==MouseEvent.BUTTON1)
-					confirmQQ();
+					confirmSina();
 			}
 		});
-		btnQq.setBounds(22, 74, 93, 23);
-		contentPane.add(btnQq);
+		btnSina.setBounds(22, 74, 167, 66);
+		contentPane.add(btnSina);
 		
-		JButton button = new JButton("163邮箱");
+		JButton button = new JButton(new ImageIcon("image/163.png"));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				confirm163();
+			public void mouseClicked(MouseEvent event) {
+				if(event.getButton()==MouseEvent.BUTTON1)
+					confirm163();
 			}
 		});
-		button.setBounds(22, 123, 93, 23);
+		button.setBounds(259, 92, 62, 38);
 		contentPane.add(button);
 		
 		JButton button_1 = new JButton("其他邮箱");
@@ -68,7 +72,7 @@ public class MainSetup extends JFrame {
 					confirmOther();
 			}
 		});
-		button_1.setBounds(22, 170, 93, 23);
+		button_1.setBounds(22, 178, 93, 23);
 		contentPane.add(button_1);
 	}
 	private void confirmOther() {
@@ -77,10 +81,10 @@ public class MainSetup extends JFrame {
 		otherSetup.setVisible(true);
 	}
 	
-	private void confirmQQ() {
-		qqMailSetup=new SinaMailSetup(this.mainInterface);
+	private void confirmSina() {
+		sinaMailSetup=new SinaMailSetup(this.mainInterface);
 		this.setVisible(false);
-		qqMailSetup.setVisible(true);
+		sinaMailSetup.setVisible(true);
 	}
 	
 	private void confirm163() {

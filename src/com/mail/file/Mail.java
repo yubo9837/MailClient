@@ -4,7 +4,9 @@
 * 类说明 
 */
 package com.mail.file;
-
+/*
+ * 邮件对象类
+ */
 import java.util.Date;
 import java.util.List;
 

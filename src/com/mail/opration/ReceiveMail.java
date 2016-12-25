@@ -32,19 +32,19 @@ public class ReceiveMail {
 			inbox.close(true);
 			return result;
 		} catch (Exception e) {
-			throw new MailEcp(e.getMessage());
+			throw new MailException(e.getMessage());
 		}
 	}
 	
 	/*
 	 * 得到邮箱INBOX
 	 */
-	private Folder getINBOXFolder(MailContext context) {
+	public Folder getINBOXFolder(MailContext context) {
 		Store store = context.getStore();
 		try {
 			return store.getFolder("INBOX");
 		} catch (MessagingException e) {
-			throw new MailEcp(e.getMessage());
+			throw new MailException(e.getMessage());
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class ReceiveMail {
 			}
 			return result;
 		} catch (Exception e) {
-			throw new MailEcp(e.getMessage());
+			throw new MailException(e.getMessage());
 		}
 		
 	}

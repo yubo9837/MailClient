@@ -19,7 +19,9 @@ import java.awt.event.MouseEvent;
 public class SinaMailSetup extends JFrame {
 
 	private JPanel contentPane;
+//	邮箱名
 	private JTextField sinaName;
+//	密码
 	private JPasswordField sinaPasswd;
 	
 	private MainInterface mainInterface;
@@ -60,7 +62,7 @@ public class SinaMailSetup extends JFrame {
 		sinaPasswd = new JPasswordField();
 		sinaPasswd.setBounds(119, 114, 147, 21);
 		contentPane.add(sinaPasswd);
-		
+//		确定按键
 		JButton confirmButtom = new JButton("确定");
 		confirmButtom.addMouseListener(new MouseAdapter() {
 			@Override
@@ -71,7 +73,7 @@ public class SinaMailSetup extends JFrame {
 		});
 		confirmButtom.setBounds(31, 185, 93, 23);
 		contentPane.add(confirmButtom);
-		
+//		取消按键
 		JButton cancelButton = new JButton("取消");
 		cancelButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -83,7 +85,7 @@ public class SinaMailSetup extends JFrame {
 		cancelButton.setBounds(173, 185, 93, 23);
 		contentPane.add(cancelButton);
 	}
-	
+//	点击确定，保存邮箱配置信息
 	private void  confirm() {
 		MailContext context=getMailContext(this.mainInterface.getContext());
 		context.setReset(true);
@@ -94,7 +96,7 @@ public class SinaMailSetup extends JFrame {
 	}
 	
 	private void  hideFrame() {
-		
+		this.setVisible(false);
 	}
 	private MailContext getMailContext(MailContext context) {
 //		String account=this.sinaName.getText()+"@sina.com";
@@ -113,7 +115,7 @@ public class SinaMailSetup extends JFrame {
 		return context;
 		
 	}
-	
+//	将密码转化为String型
 	private String getPassword() {
 		char[] passes = this.sinaPasswd.getPassword();
 		StringBuffer password = new StringBuffer();

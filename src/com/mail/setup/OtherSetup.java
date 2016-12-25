@@ -178,9 +178,6 @@ public class OtherSetup extends JFrame {
 		String pop3PortS = this.textf_POPport.getText();
 		String[] values = new String[]{account, password, smtpServer, smtpPortS, 
 				pop3Server, pop3Server, pop3PortS};
-//		validateRequire(values);
-		//验证端口数字
-//		validateLegal(new String[]{smtpPortS, pop3PortS});
 		//强制转化为int类型
 		Integer smtpPort = Integer.valueOf(smtpPortS);
 		Integer pop3Port = Integer.valueOf(pop3PortS);
@@ -194,6 +191,5 @@ public class OtherSetup extends JFrame {
 		context.setReset(true);
 		
 		return context;
-		
 	}
 }

@@ -1,5 +1,7 @@
 package com.mail.file;
-
+/*
+ *文件对象类
+ */
 import java.io.File;
 
 public class FileObject {
@@ -34,6 +36,4 @@ public class FileObject {
 	public String toString() {
 		return this.sourceName;
 	}
-	
-	
 }

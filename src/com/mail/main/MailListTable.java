@@ -10,6 +10,8 @@ public class MailListTable extends JTable {
 		super(dm);
 		//只能选择一行
 		getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		自动排序
+		setAutoCreateRowSorter(true);
 		//去掉表格的线
 		setShowHorizontalLines(false);
 		setShowVerticalLines(false);
