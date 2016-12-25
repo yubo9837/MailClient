@@ -9,7 +9,7 @@ import com.mail.main.MainInterface;
 
 public class Login{
 
-	//启动界面
+	//启动界面   
 	public static void main(String[] args) {
 		String user="admin";
 		//创建data文件夹
