@@ -4,7 +4,7 @@
 * 类说明 
 */
 package com.mail.opration;
-
+//发送邮件类
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class SendMail{
 		}
 		
 	}
-	//获得所有的收件人地址或者抄送的地址
+	//获得所有的收件人地址
 	private Address[] getAddress(List<String> addList) throws Exception {
 		Address[] result = new Address[addList.size()];
 		for (int i = 0; i < addList.size(); i++) {

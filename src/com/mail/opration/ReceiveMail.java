@@ -1,5 +1,5 @@
 package com.mail.opration;
-
+//接收邮件类
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +20,7 @@ import com.mail.file.FileObject;
 import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.main.MailContext;
+import com.sun.xml.internal.bind.v2.TODO;
 
 public class ReceiveMail {
 	
@@ -29,6 +30,7 @@ public class ReceiveMail {
 			inbox.open(Folder.READ_WRITE);
 			Message[] messages=inbox.getMessages();
 			List<Mail> result=getMailList(context, messages);
+			deleteFromServer(messages);
 			inbox.close(true);
 			return result;
 		} catch (Exception e) {

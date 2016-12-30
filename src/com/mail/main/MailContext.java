@@ -1,5 +1,5 @@
 package com.mail.main;
-
+/*邮箱配置类*/
 import java.util.Properties;
 
 import javax.mail.Authenticator;

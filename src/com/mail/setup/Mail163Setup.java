@@ -102,6 +102,7 @@ public class Mail163Setup extends JFrame {
 		String password=this.getPassword();
 		context.setAccount(account);
 		context.setPassword(password);
+
 		context.setSmtpServer("smtp.163.com");
 		context.setSmtpPort(25);
 		context.setPop3Server("pop3.163.com");

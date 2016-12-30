@@ -27,7 +27,9 @@ import com.mail.file.FileObject;
 import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.opration.SendMail;
-import com.mail.system.SystemHandler;
+import com.mail.opration.SystemHandler;
+
+import javax.swing.ScrollPaneConstants;
 
 public class WriteMailInterface extends JFrame {
 
@@ -97,13 +99,11 @@ public class WriteMailInterface extends JFrame {
 		contentPane.add(labelTitle);
 		//收件人
 		receive = new JTextField();
-		receive.setText("983763802@qq.com");
 		receive.setBounds(79, 109, 336, 21);
 		contentPane.add(receive);
 		receive.setColumns(10);
 //		主题
 		mailTitle = new JTextField();
-		mailTitle.setText("测试");
 		mailTitle.setBounds(79, 146, 336, 21);
 		contentPane.add(mailTitle);
 		mailTitle.setColumns(10);
@@ -122,22 +122,25 @@ public class WriteMailInterface extends JFrame {
 		contentPane.add(splitPane);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		splitPane.setRightComponent(scrollPane);
-		//测试用，过后删掉
+		
 		textArea = new JTextArea();
-		textArea.setText("这是一封测试邮件");
+		textArea.setLineWrap(true);
 		scrollPane.setViewportView(textArea);
 		fileList=new JList();
-//		fileList.addMouseListener(new SendListMouseListener());
 		JScrollPane fileScrollPane = new JScrollPane(fileList);
 		splitPane.setLeftComponent(fileScrollPane);
 	}
-	
+/*
+ * 解析出收件人列表
+ * 可设多接收者，中间分隔符为,;，；
+ * */
 	private List<String> getAddressList(JTextField field) {
 		String all = field.getText();
 		List<String> result = new ArrayList<String>();
 		if (all.equals("")) return result; 
-		for (String re : all.split(",")) {
+		for (String re : all.split("[,;，；]")) {
 			result.add(re);
 		}
 		return result;
@@ -163,7 +166,7 @@ public class WriteMailInterface extends JFrame {
 	}
 
 	//清空界面各个元素
-	private void clean() {
+	public void clean() {
 		this.receive.setText("");
 		this.mailTitle.setText("");
 		this.textArea.setText("");
@@ -200,11 +203,20 @@ public class WriteMailInterface extends JFrame {
 		this.receive.setText(mail.getSender());
 		this.fileList.setListData(mail.getFiles().toArray());
 		this.mailTitle.setText("回复: " + mail.getSubject());
-		this.textArea.setText(mail.getContent());
+		this.textArea.setText(mail.getContent()
+				+"\n"+"--------以上是原始邮件--------\n");
 	}
 	
 	public void transmitInit(Mail mail) {
 		this.setVisible(true);
+		this.mailTitle.setText(mail.getSubject());
+		this.textArea.setText(mail.getContent());
+	}
+	
+	public void reSentInit(Mail mail) {
+		this.setVisible(true);
+		this.receive.setText(mail.getReceiverString());
+		this.fileList.setListData(mail.getFiles().toArray());
 		this.mailTitle.setText(mail.getSubject());
 		this.textArea.setText(mail.getContent());
 	}

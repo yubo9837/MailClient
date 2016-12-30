@@ -1,4 +1,4 @@
-package com.mail.system;
+package com.mail.opration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import com.mail.file.FileObject;
 import com.mail.file.FileOp;
 import com.mail.file.Mail;
 import com.mail.main.MailContext;
-import com.mail.system.SystemLoader;
+import com.mail.opration.SystemLoader;
 
 public class SystemLoader{
 	public SystemLoader() {

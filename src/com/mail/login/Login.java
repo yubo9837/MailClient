@@ -37,7 +37,7 @@ public class Login{
 			e.printStackTrace();
 		}
 	}
-	
+//	删除文件夹的所有内容
 	private static void deleteFile(File file){
 		if(file.isDirectory()){
 			File[] files = file.listFiles();

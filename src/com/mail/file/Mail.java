@@ -26,7 +26,7 @@ public class Mail {
 	private String content;
 	//附件
 	private List<FileObject> files;
-	//邮件来源, 如果是从邮箱收到的, 则放在INBOX, 其他情况对应的放
+	//邮件来源
 	private String from;
 	
 	public Mail(String xmlName, String sender, List<String> receivers, String subject, Date receiveDate, String size,

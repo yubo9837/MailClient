@@ -1,5 +1,5 @@
 package com.mail.file;
-
+/*邮件属性会保存在一个Properties文件中*/
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,7 +16,7 @@ public class PropertiesFile {
 		properties.load(fileInputStream);
 		return properties;
 	}
-	
+//	根据配置文件的对象来构造MailContext对象
 	public static MailContext createContext(File propertiesFile) throws IOException {
 		Properties properties = getProperties(propertiesFile);
 		int smtpPort=getInt(properties.getProperty("smtpPort"), 25);
@@ -36,7 +36,7 @@ public class PropertiesFile {
 		}
 		return Integer.parseInt(s);
 	}
-	
+//	保存一个MailContext对象， 将它的属性写入文件中
 	public static void store(MailContext context) {
 		try {
 			File propFile = new File(FileOp.DATE_FOLDER + context.getUser() + FileOp.CONFIG_FILE);

@@ -1,5 +1,7 @@
 package com.mail.file;
-
+/*
+ * 文件操作类
+ * */
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,9 +20,6 @@ import com.mail.opration.MailException;
 import com.thoughtworks.xstream.XStream;
 
 public class FileOp {
-	
-	private static XStream xStream=new XStream();
-
 	//存放所有用户数据的目录
 	public static final String DATE_FOLDER = "data" + File.separator;
 	//存放具体某个用户配置的properties文件
@@ -36,9 +35,7 @@ public class FileOp {
 	//附件的存放目录名
 	public static final String FILE = "file";
 	
-	/**
-	 * 创建用户的帐号目录和相关的子目录
-	 */
+//	 创建用户的帐号目录和相关的子目录
 	public static void createFolder(MailContext context) {
 		String accountRoot = getAccountRoot(context);
 		//使用用户当前设置的帐号来生成目录
@@ -54,7 +51,7 @@ public class FileOp {
 		//附件存放目录
 		mkdir(new File(accountRoot + FILE));
 	}
-	
+	private static XStream xStream=new XStream();
 	//得到邮件帐号的根目录
 	private static String getAccountRoot(MailContext context) {
 		String accountRoot = DATE_FOLDER + context.getUser() + 
@@ -62,7 +59,7 @@ public class FileOp {
 		return accountRoot;
 	}
 	
-	//得到某个目录名字, 例如得到file的目录, inbox的目录
+	//得到某个目录名字
 	public static String getBoxPath(MailContext context, String folderName) {
 		return getAccountRoot(context) + folderName + File.separator;
 	}
@@ -167,7 +164,7 @@ public class FileOp {
 			FileOutputStream fos = new FileOutputStream(file);
 			InputStream is = part.getInputStream();
 			BufferedOutputStream outs = new BufferedOutputStream(fos);
-			//如果附件内容为空part.getSize为-1, 如果直接new byte, 将抛出异常
+			
 			int size = (part.getSize() > 0) ? part.getSize() : 0;
 			byte[] b = new byte[size];
 			is.read(b);

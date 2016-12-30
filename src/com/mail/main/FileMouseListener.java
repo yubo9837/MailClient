@@ -4,7 +4,7 @@
 * 类说明 
 */
 package com.mail.main;
-
+/*附件监听事件*/
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
