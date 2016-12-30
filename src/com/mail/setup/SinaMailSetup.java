@@ -99,10 +99,8 @@ public class SinaMailSetup extends JFrame {
 		this.setVisible(false);
 	}
 	private MailContext getMailContext(MailContext context) {
-//		String account=this.sinaName.getText()+"@sina.com";
-		String account="iyuboi@sina.com";//测试用
-//		String password=this.getPassword();
-		String password="19960922Yb";
+		String account=this.sinaName.getText()+"@sina.com";
+		String password=this.getPassword();
 		context.setAccount(account);
 		context.setPassword(password);
 		context.setSmtpServer("smtp.sina.com");
